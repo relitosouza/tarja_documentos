@@ -1,28 +1,28 @@
 # 🚀 Flask PDF Redactor
 
-[cite_start]Este projeto é uma aplicação web construída com **Flask** [cite: 1] [cite_start]e **PyMuPDF** [cite: 1] que oferece uma ferramenta simples e eficiente para a **redação permanente** (tarjamento) de dados sensíveis (PII - *Personally Identifiable Information*) em documentos PDF com texto pesquisável.
+Este projeto é uma aplicação web construída com **Flask** e **PyMuPDF** que oferece uma ferramenta simples e eficiente para a **redação permanente** (tarjamento) de dados sensíveis (PII - *Personally Identifiable Information*) em documentos PDF com texto pesquisável.
 
 A principal funcionalidade é garantir que o conteúdo redigido seja **removido fisicamente** do arquivo, e não apenas coberto por uma caixa preta.
 
 ## ✨ Funcionalidades Principais
 
-* [cite_start]**Interface Web Simples:** Uma interface amigável para upload de arquivos PDF (apenas `.pdf`) [cite: 1, 10] [cite_start]com limite de 50 MB[cite: 10].
+* **Interface Web Simples:** Uma interface amigável para upload de arquivos PDF (apenas `.pdf`) com limite de 50 MB.
 * **Redação Seletiva:** O usuário pode escolher quais categorias de PII serão redigidas antes do processamento, utilizando expressões regulares para tarjamento:
     * **Emails**
     * **CPFs**
     * **RGs**
     * **Celulares/Telefones**
     * **Endereços** (incluindo padrões de rua, avenida e CEP)
-* [cite_start]**Processamento Seguro:** Utiliza a biblioteca **PyMuPDF** [cite: 1] para garantir que o texto e os objetos sobrepostos sejam removidos permanentemente após o tarjamento.
-* [cite_start]**Gestão de Arquivos:** Lida com o *upload* de arquivos com segurança (`secure_filename`) e gerencia o download do arquivo processado, salvando-o na pasta `uploads`[cite: 10].
-* [cite_start]**Tecnologia:** O core da aplicação é o Flask[cite: 1, 10].
+* **Processamento Seguro:** Utiliza a biblioteca **PyMuPDF** para garantir que o texto e os objetos sobrepostos sejam removidos permanentemente.
+* **Gestão de Arquivos:** Lida com o *upload* de arquivos com segurança e gerencia o download do arquivo processado, salvando-o na pasta `uploads`.
+* **Tecnologia:** O core da aplicação é o Flask.
 
 ## 🛠️ Tecnologias Utilizadas
 
 * **Backend:** Python 3
-* [cite_start]**Framework Web:** [Flask](https://flask.palletsprojects.com/) (`Flask>=2.0`) [cite: 1]
-* [cite_start]**Manipulação de PDF:** [PyMuPDF (fitz)](https://pymupdf.readthedocs.io/en/latest/) (`PyMuPDF>=1.21.1`) [cite: 1]
-* [cite_start]**Outras Dependências:** `python-magic>=0.4.27`, `Werkzeug>=2.0` [cite: 1]
+* **Framework Web:** [Flask](https://flask.palletsprojects.com/) (`Flask>=2.0`)
+* **Manipulação de PDF:** [PyMuPDF (fitz)](https://pymupdf.readthedocs.io/en/latest/) (`PyMuPDF>=1.21.1`)
+* **Outras Dependências:** `python-magic>=0.4.27`, `Werkzeug>=2.0`
 
 ## ⚙️ Preparação e Execução
 
@@ -39,7 +39,7 @@ Para configurar e rodar o projeto localmente, siga os passos abaixo:
     pip install -r requirements.txt
     ```
 4.  **Estrutura de Diretórios:** Certifique-se de que as pastas `utils/` e `static/` existem, conforme a estrutura do projeto.
-5.  [cite_start]**Executar o Aplicativo:** O modo `debug=True` está ativado no `app.py`[cite: 10].
+5.  **Executar o Aplicativo:**
     ```bash
     python3 app.py
     ```
@@ -47,4 +47,4 @@ Para configurar e rodar o projeto localmente, siga os passos abaixo:
 
 ## 📄 Licença
 
-[cite_start]Este projeto é distribuído sob a **GNU General Public License, Version 3 (GPL-3.0)**[cite: 2]. [cite_start]A GPL é uma licença *copyleft* livre [cite: 3][cite_start], que visa garantir a liberdade de compartilhar e modificar o software para todos os seus usuários[cite: 5].
+Este projeto é distribuído sob a **GNU General Public License, Version 3 (GPL-3.0)**. A GPL é uma licença *copyleft* livre, que visa garantir a liberdade de compartilhar e modificar o software para todos os seus usuários.
