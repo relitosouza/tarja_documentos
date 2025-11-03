@@ -20,8 +20,14 @@ REGEX_PHONE = r'(?:\+\d{1,3}\s?)?\(?\d{2}\)?[\s-]?9?\d{4}-?\d{4}\b'
 # Padrão 5: CEP (Ex: 00000-000)
 REGEX_CEP = r'\b\d{5}-?\d{3}\b'
 
+# ... (início do utils/redact.py) ...
+
 # Padrão 6: Termos Comuns de Endereço (Rua, Av, Travessa, etc.)
-REGEX_ADDRESS_TERMS = r'\b(?:Rua|Av(?:enida)?|Travessa|Alameda|Praça|Estrada|Beco|Servidão)\s+[A-Z][a-zà-ú\s]{3,},\s*\d+'
+# NOVO REGEX DE ENDEREÇO: Mais permissivo para pontuação e caixa de letras.
+# Captura o termo (Rua, Av, etc.) seguido por qualquer texto e um número de 2 a 4 dígitos.
+REGEX_ADDRESS_TERMS = r'\b(?:RUA|AVENIDA|TRAVESSA|ALAMEDA|PRAÇA|ESTRADA|BECO|SERVIDÃO|R\.|AV\.)\b[\s\.,]*[\w\s\-\.\/]*\s+\d{2,4}\b'
+
+# ... (o resto do utils/redact.py, incluindo a função redact_pdf, permanece o mesmo) ...
 
 
 def redact_pdf(input_path: str, output_path: str, redact_email: bool, redact_cpf: bool, redact_address: bool, redact_rg: bool, redact_phone: bool):
@@ -95,3 +101,4 @@ def redact_pdf(input_path: str, output_path: str, redact_email: bool, redact_cpf
     # 4. Salvar o PDF redigido
     doc.save(output_path, garbage=4, deflate=True)
     doc.close()
+
