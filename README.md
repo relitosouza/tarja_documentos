@@ -1,3 +1,5 @@
+🚀 Flask PDF Redactor
+
 Este é um projeto de aplicação web construído com Flask e PyMuPDF que oferece uma ferramenta simples e eficiente para a redação permanente (tarjamento) de dados sensíveis (PII - Personally Identifiable Information) em documentos PDF com texto pesquisável.
 
 A principal funcionalidade é garantir que o conteúdo redigido seja removido fisicamente do arquivo, e não apenas coberto por uma caixa preta (o que poderia ser revertido).
@@ -55,3 +57,4 @@ Acesse http://127.0.0.1:5000/ no seu navegador.
 
 📄 Licença
 Este projeto é distribuído sob a GNU General Public License, Version 3 (GPL-3.0). A GPL garante a liberdade de compartilhar e modificar o software para todos os seus usuários.
+
