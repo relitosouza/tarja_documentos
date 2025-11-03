@@ -1,0 +1,46 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f8f8f8;
+    color: #222
+}
+
+.container {
+    width: 680px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06)
+}
+
+input[type=file] {
+    display: block;
+    margin-bottom: 10px
+}
+
+button {
+    padding: 10px 16px;
+    border: none;
+    background: #007bff;
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer
+}
+
+button:hover {
+    opacity: 0.95
+}
+
+.flashes {
+    color: #b20000
+}
+
+.note {
+    font-size: 0.9em;
+    color: #666
+}
+
+.options label {
+    display: inline-block;
+    margin-right: 10px
+}

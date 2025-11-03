@@ -1,0 +1,4 @@
+Flask 
+python-dotenv 
+Werkzeug 
+(Adicione outras dependencias aqui, como numpy ou pandas se necessario) 
