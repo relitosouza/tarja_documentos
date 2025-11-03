@@ -1,33 +1,39 @@
 <!doctype html>
 <html lang="pt-br">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Redator de PDFs</title>
-<link rel="stylesheet" href="/static/style.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Redator de PDFs</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
+
 <body>
-<div class="container">
-<h1>Redator de PDFs — emails, CPF e endereços</h1>
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-<ul class="flashes">
-{% for msg in messages %}
-<li>{{ msg }}</li>
-{% endfor %}
-</ul>
-{% endif %}
-{% endwith %}
-<form action="/redact" method="post" enctype="multipart/form-data">
-<input type="file" name="file" accept="application/pdf" required>
-<div class="options">
-<label><input type="checkbox" name="email" checked disabled> Redigir emails</label>
-<label><input type="checkbox" name="cpf" checked disabled> Redigir CPFs</label>
-<label><input type="checkbox" name="address" checked disabled> Redigir endereços</label>
-</div>
-<button type="submit">Enviar e redigir</button>
-</form>
-<p class="note">Observação: este serviço processa apenas PDFs com texto pesquisável. Para PDFs escaneados, ative OCR (não habilitado por padrão).</p>
-</div>
+    <div class="container">
+        <h1>Redator de PDFs — PII</h1>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul class="flashes">
+            {% for msg in messages %}
+            <li>{{ msg }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+        <form action="/redact" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" accept="application/pdf" required>
+            <div class="options">
+                <label><input type="checkbox" name="email" checked> Redigir emails</label>
+                <label><input type="checkbox" name="cpf" checked> Redigir CPFs</label>
+                <label><input type="checkbox" name="rg" checked> Redigir RGs</label>
+                <label><input type="checkbox" name="phone" checked> Redigir Celulares/Telefones</label> <label><input
+                        type="checkbox" name="address" checked> Redigir endereços (inclui CEP)</label>
+            </div>
+            <button type="submit">Enviar e redigir</button>
+        </form>
+        <p class="note">Observação: este serviço processa apenas PDFs com texto pesquisável. Para PDFs escaneados, ative
+            OCR (não habilitado por padrão).</p>
+    </div>
 </body>
+
 </html>
