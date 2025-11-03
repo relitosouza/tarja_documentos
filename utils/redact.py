@@ -1,84 +1,97 @@
-import re
 import fitz # PyMuPDF
-from typing import List, Tuple
+import re
+import os
+
+# --- Expressões Regulares (Regex) para PII ---
+# Padrão 1: Endereço de Email (Ex: usuario@dominio.com)
+REGEX_EMAIL = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+
+# Padrão 2: CPF (Ex: 000.000.000-00)
+REGEX_CPF = r'\b\d{3}\.?\d{3}\.?\d{3}-?\d{2}\b'
+
+# Padrão 3: RG (Registro Geral)
+REGEX_RG = r'\b\d{1,2}\.?\d{3}\.?\d{3}-?\d{1}X?\b'
+
+# Padrão 4: Celular Brasileiro (Ex: (00) 90000-0000, 00 900000000) - NOVO PADRÃO
+# Este padrão é complexo e deve ser testado:
+# (DDI opcional) (DDD opcional) 9 + 8 dígitos
+REGEX_PHONE = r'(?:\+\d{1,3}\s?)?\(?\d{2}\)?[\s-]?9?\d{4}-?\d{4}\b'
+
+# Padrão 5: CEP (Ex: 00000-000)
+REGEX_CEP = r'\b\d{5}-?\d{3}\b'
+
+# Padrão 6: Termos Comuns de Endereço (Rua, Av, Travessa, etc.)
+REGEX_ADDRESS_TERMS = r'\b(?:Rua|Av(?:enida)?|Travessa|Alameda|Praça|Estrada|Beco|Servidão)\s+[A-Z][a-zà-ú\s]{3,},\s*\d+'
 
 
-EMAIL_REGEX = re.compile(r"[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+")
-CPF_REGEX = re.compile(r"(?:\d{3}\.\d{3}\.\d{3}-\d{2}|\d{11})")
-ADDRESS_REGEX = re.compile(
-r"\b(?:Rua:|R\.|Avenida:|Av:\.|Av:|Travessa:|Praça:|Praca:|Rodovia:|Rod:|Alameda:|Pagador:  |Al:\.)\s+[^\n,]{3,60}\s*(?:,\s*\d{1,5})?",
-re.IGNORECASE,
-)
-TARJA_FILL = (0, 0, 0)
-
-
-
-
-def find_matches_in_words(words: List[Tuple[float, float, float, float, str]], regex: re.Pattern):
+def redact_pdf(input_path: str, output_path: str, redact_email: bool, redact_cpf: bool, redact_address: bool, redact_rg: bool, redact_phone: bool):
     """
-    Procura o padrão nas palavras e retorna apenas os retângulos (bboxes)
-    diretamente sobre as palavras que contêm o match.
+    Abre um arquivo PDF e aplica a redação baseada nos argumentos booleanos.
+    
+    :param input_path: Caminho para o arquivo PDF de entrada.
+    :param output_path: Caminho para o arquivo PDF de saída redigido.
+    :param redact_email: Se emails devem ser redigidos.
+    :param redact_cpf: Se CPFs devem ser redigidos.
+    :param redact_address: Se endereços (incluindo CEP) devem ser redigidos.
+    :param redact_rg: Se números de RG devem ser redigidos.
+    :param redact_phone: Se números de telefone/celular devem ser redigidos.
     """
-    bboxes = []
-    for x0, y0, x1, y1, text in words:
-        if regex.search(text):
-            bboxes.append((x0, y0, x1, y1))
-    return bboxes
+    
+    # 1. Montar a lista de padrões com base nas flags
+    pii_patterns_to_use = []
+    
+    if redact_email:
+        pii_patterns_to_use.append((REGEX_EMAIL, "EMAIL"))
+    
+    if redact_cpf:
+        pii_patterns_to_use.append((REGEX_CPF, "CPF"))
+        
+    if redact_rg:
+        pii_patterns_to_use.append((REGEX_RG, "RG"))
+
+    if redact_phone:
+        pii_patterns_to_use.append((REGEX_PHONE, "TELEFONE")) # NOVO
+        
+    if redact_address:
+        # Endereços usam dois padrões (o termo e o CEP)
+        pii_patterns_to_use.append((REGEX_ADDRESS_TERMS, "ENDEREÇO"))
+        pii_patterns_to_use.append((REGEX_CEP, "CEP"))
 
 
+    if not pii_patterns_to_use:
+        print("Aviso: Nenhuma opção de redação selecionada na função.")
+        
+    try:
+        doc = fitz.open(input_path)
+    except Exception as e:
+        raise IOError(f"Não foi possível abrir o PDF: {e}")
 
+    # Itera por todas as páginas
+    for page in doc:
+        redact_areas = []
+        text = page.get_text("text")
 
-def merge_close_bboxes(bboxes: List[Tuple[float, float, float, float]], gap=1.0):
-    if not bboxes:
-        return []
-    boxes = [list(b) for b in bboxes]
-    boxes.sort(key=lambda b: (b[0], b[1]))
-    merged = []
-    cur = boxes[0]
-    for b in boxes[1:]:
-        if (b[0] <= cur[2] + gap) and (b[1] <= cur[3] + gap) and (b[3] >= cur[1] - gap):
-            cur[2] = max(cur[2], b[2])
-            cur[3] = max(cur[3], b[3])
-            cur[0] = min(cur[0], b[0])
-            cur[1] = min(cur[1], b[1])
-        else:
-            merged.append(tuple(cur))
-            cur = b
-    merged.append(tuple(cur))
-    return merged
+        # 2. Buscar por padrões de PII ativados
+        for pattern, pii_type in pii_patterns_to_use:
+            
+            # re.finditer busca todas as ocorrências do padrão no texto da página
+            for match in re.finditer(pattern, text, re.IGNORECASE):
+                matching_text = match.group(0)
+                
+                # Encontrar os retângulos (Rects) para o texto encontrado
+                rects = page.search_for(matching_text) 
+                
+                for rect in rects:
+                    redact_areas.append(rect)
+                        
+        # 3. Adicionar e Aplicar Redações
+        for rect in redact_areas:
+            # Marca a área para remoção com uma caixa preta (0, 0, 0)
+            page.add_redact_annot(rect, fill=(0, 0, 0))
 
+        # Remove fisicamente o texto e transforma as anotações em caixas pretas
+        page.apply_redactions()
 
-
-
-def redact_pdf(input_path: str, output_path: str, redact_email=True, redact_cpf=True, redact_address=True):
-    doc = fitz.open(input_path)
-    for page_num in range(len(doc)):
-        page = doc[page_num]
-        words = page.get_text("words")
-        words = [(w[0], w[1], w[2], w[3], w[4]) for w in words]
-        all_bboxes = []
-
-
-        if redact_email:
-            all_bboxes.extend(find_matches_in_words(words, EMAIL_REGEX))
-        if redact_cpf:
-            all_bboxes.extend(find_matches_in_words(words, CPF_REGEX))
-        if redact_address:
-            all_bboxes.extend(find_matches_in_words(words, ADDRESS_REGEX))
-
-
-        merged = merge_close_bboxes(all_bboxes, gap=0.5)
-
-
-        for bbox in merged:
-            x0, y0, x1, y1 = bbox
-            pad = 0.8
-            rect = fitz.Rect(x0 - pad, y0 - pad, x1 + pad, y1 + pad)
-            shape = page.new_shape()
-            shape.draw_rect(rect)
-            shape.finish(fill=TARJA_FILL, color=TARJA_FILL)
-            shape.commit()
-
-
-    doc.save(output_path, deflate=True)
+    # 4. Salvar o PDF redigido
+    doc.save(output_path, garbage=4, deflate=True)
     doc.close()
