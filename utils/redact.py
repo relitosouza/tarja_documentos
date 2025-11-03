@@ -15,7 +15,7 @@ REGEX_CPF = r'\b\d{3}\.?\d{3}\.?\d{3}-?\d{2}\b'
 REGEX_RG = r'\b\d{1,2}\.?\d{3}\.?\d{3}-?\d{1,2}X?\b'
 
 # Padrão 4: Celular Brasileiro
-REGEX_PHONE = r'(?:\+\d{1,3}\s?)?\(?\d{2}\)?[\s-]?9?\d{4}-?\d{4}\b'
+REGEX_PHONE = r'(?:\+\d{1,3}\s?)?\(?\d{2}\)?[\s-]?\d{4,5}-?\d{4}\b'
 
 # Padrão 5: CEP
 REGEX_CEP = r'\b\d{5}-?\d{3}\b'
@@ -75,3 +75,4 @@ def redact_pdf(input_path: str, output_path: str, redact_email: bool, redact_cpf
 
     doc.save(output_path, garbage=4, deflate=True)
     doc.close()
+
