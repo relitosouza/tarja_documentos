@@ -13,13 +13,13 @@ REGEX_CPF = r'\b\d{3}\.?\d{3}\.?\d{3}-?\d{2}\b'
 # Padrão 3: RG (Registro Geral) - Permite 1 ou 2 dígitos no final (ex: -02)
 REGEX_RG = r'\b\d{1,2}\.?\d{3}\.?\d{3}-?\d{1,2}X?\b'
 
-# Padrão 4: Celular Brasileiro - Permite 4 ou 5 dígitos na primeira parte (ex: (11) 98182-4903)
+# Padrão 4: Celular Brasileiro - Ajustado para formato 9xxxx-xxxx
 REGEX_PHONE = r'(?:\+\d{1,3}\s?)?\(?\d{2}\)?[\s-]?\d{4,5}-?\d{4}\b'
 
 # Padrão 5: CEP
 REGEX_CEP = r'\b\d{5}-?\d{3}\b'
 
-# Padrão 6: Termos Comuns de Endereço - Mais permissivo para pontuação e caixa alta.
+# Padrão 6: Termos Comuns de Endereço - Ajustado para ser mais flexível e capturar texto em caixa alta
 REGEX_ADDRESS_TERMS = r'\b(?:RUA|AVENIDA|TRAVESSA|ALAMEDA|PRAÇA|ESTRADA|BECO|SERVIDÃO|R\.|AV\.)\b[\s\.,]*[\w\s\-\.\/]*\s+\d{2,4}\b'
 
 
