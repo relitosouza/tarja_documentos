@@ -1,13 +1,34 @@
-# ... (Padrões de Regex de EMAIL, CPF, etc. permanecem os mesmos) ...
+import fitz # PyMuPDF
+import re
+import os
+
+# --- Expressões Regulares (Regex) para PII ---
+
+# Padrão 1: Endereço de Email
+REGEX_EMAIL = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+
+# Padrão 2: CPF (11 dígitos)
+REGEX_CPF = r'\b\d{3}\.?\d{3}\.?\d{3}-?\d{2}\b'
+
+# Padrão 3: RG (Registro Geral) - Permite 1 ou 2 dígitos no final (ex: -02)
+REGEX_RG = r'\b\d{1,2}\.?\d{3}\.?\d{3}-?\d{1,2}X?\b'
+
+# Padrão 4: Celular Brasileiro - Permite 4 ou 5 dígitos na primeira parte (ex: (11) 98182-4903)
+REGEX_PHONE = r'(?:\+\d{1,3}\s?)?\(?\d{2}\)?[\s-]?\d{4,5}-?\d{4}\b'
+
+# Padrão 5: CEP
+REGEX_CEP = r'\b\d{5}-?\d{3}\b'
+
+# Padrão 6: Termos Comuns de Endereço - Mais permissivo para pontuação e caixa alta.
+REGEX_ADDRESS_TERMS = r'\b(?:RUA|AVENIDA|TRAVESSA|ALAMEDA|PRAÇA|ESTRADA|BECO|SERVIDÃO|R\.|AV\.)\b[\s\.,]*[\w\s\-\.\/]*\s+\d{2,4}\b'
+
 
 def redact_pdf(input_path: str, output_path: str, redact_email: bool, redact_cpf: bool, redact_address: bool, redact_rg: bool, redact_phone: bool, custom_terms_list: list):
     """
     Abre um arquivo PDF e aplica a redação baseada nos argumentos booleanos e termos personalizados.
-    
-    :param custom_terms_list: Lista de strings fornecidas pelo usuário para redação.
     """
     
-    # 1. Montar a lista de padrões com base nas flags
+    # 1. Montar a lista de padrões (Regex) com base nas flags
     pii_patterns_to_use = []
     
     if redact_email:
@@ -25,7 +46,6 @@ def redact_pdf(input_path: str, output_path: str, redact_email: bool, redact_cpf
     if redact_address:
         pii_patterns_to_use.append((REGEX_ADDRESS_TERMS, "ENDEREÇO"))
         pii_patterns_to_use.append((REGEX_CEP, "CEP"))
-
 
     if not pii_patterns_to_use and not custom_terms_list:
         print("Aviso: Nenhuma opção de redação selecionada na função.")
@@ -54,7 +74,6 @@ def redact_pdf(input_path: str, output_path: str, redact_email: bool, redact_cpf
         # 3. Busca por termos personalizados (Strings exatas)
         if custom_terms_list:
             for term in custom_terms_list:
-                # Remove espaços em branco extras e garante que o termo não está vazio
                 clean_term = term.strip()
                 if clean_term:
                     # Busca a string exata fornecida pelo usuário
