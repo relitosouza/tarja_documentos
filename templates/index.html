@@ -14,32 +14,46 @@
         {% with messages = get_flashed_messages() %}
         {% if messages %}
         <ul class="flashes">
-            {% for msg in messages %}
-            <li>{{ msg }}</li>
+            {% for msg in messages %}\r\n<li>{{ msg }}</li>
             {% endfor %}
         </ul>
         {% endif %}
         {% endwith %}
         <form action="/redact" method="post" enctype="multipart/form-data">
             <input type="file" name="file" accept="application/pdf" required>
+
+            <div class="control-buttons">
+                <button type="button" onclick="toggleAll(true)">Selecionar Todos</button>
+                <button type="button" onclick="toggleAll(false)">Desmarcar Todos</button>
+            </div>
             <div class="options">
-                <label><input type="checkbox" name="email" checked> Redigir emails</label>
-                <label><input type="checkbox" name="cpf" checked> Redigir CPFs</label>
-                <label><input type="checkbox" name="rg" checked> Redigir RGs</label>
-                <label><input type="checkbox" name="phone" checked> Redigir Celulares/Telefones</label>
-                <label><input type="checkbox" name="address" checked> Redigir endereços (inclui CEP)</label>
+                <label><input type="checkbox" name="email"> Redigir emails</label>
+                <label><input type="checkbox" name="cpf"> Redigir CPFs</label>
+                <label><input type="checkbox" name="rg"> Redigir RGs</label>
+                <label><input type="checkbox" name="phone"> Redigir Celulares/Telefones</label>
+                <label><input type="checkbox" name="address"> Redigir endereços (inclui CEP)</label>
             </div>
 
             <div class="custom-input">
                 <label for="custom_terms">Itens Personalizados (separados por vírgula):</label>
-                <input type="text" name="custom_terms" id="custom_terms"
-                    placeholder="Ex: RDM MATERIAIS, 03.668.066/0001-42">
+                <textarea name="custom_terms" id="custom_terms" rows="4"
+                    placeholder="Ex: RDM MATERIAIS, 03.668.066/0001-42."></textarea>
             </div>
             <button type="submit">Enviar e redigir</button>
         </form>
         <p class="note">Observação: este serviço processa apenas PDFs com texto pesquisável. Para PDFs escaneados, ative
             OCR (não habilitado por padrão).</p>
     </div>
+
+    <script>
+        function toggleAll(checkState) {
+            // Encontra todas as caixas de seleção dentro da div 'options'
+            const checkboxes = document.querySelectorAll('.options input[type="checkbox"][name]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = checkState;
+            });
+        }
+    </script>
 </body>
 
 </html>
