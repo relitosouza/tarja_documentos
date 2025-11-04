@@ -16,7 +16,8 @@ body {
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 450px;
+    max-width: 800px;
+    /* LARGURA AUMENTADA */
     text-align: center;
 }
 
@@ -40,11 +41,34 @@ input[type="file"] {
     background-color: #f9f9f9;
 }
 
+/* Novo estilo para os botões de controle */
+.control-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.control-buttons button {
+    flex-grow: 1;
+    background-color: #6c757d;
+    color: white;
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s;
+}
+
+.control-buttons button:hover {
+    background-color: #5a6268;
+}
+
 .options {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 10px 0;
+    padding: 10px;
     border: 1px solid #eee;
     border-radius: 4px;
     background-color: #fcfcfc;
@@ -53,6 +77,31 @@ input[type="file"] {
 .options label {
     margin-bottom: 5px;
     cursor: pointer;
+    text-align: left;
+}
+
+/* Estilos para o campo personalizado */
+.custom-input {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.custom-input label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+/* Força o textarea a ocupar 100% do container */
+.custom-input textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    /* Garante que padding e border não aumentem a largura total */
+    resize: vertical;
+    /* Permite redimensionar apenas verticalmente */
 }
 
 button[type="submit"] {
@@ -94,6 +143,21 @@ button[type="submit"]:hover {
 }
 
 /* Estilo da página de resultado */
+.pdf-preview {
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    height: 800px;
+    /* Altura mantida da última alteração */
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.pdf-preview iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
 .container a {
     display: inline-block;
     background-color: #28a745;
