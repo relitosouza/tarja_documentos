@@ -48,7 +48,6 @@ def redact_route():
         
         # 2. Captura e processa os termos personalizados
         custom_terms_string = request.form.get('custom_terms', '')
-        # Cria uma lista, removendo espaços em branco e termos vazios
         custom_terms_list = [term.strip() for term in custom_terms_string.split(',') if term.strip()] 
 
         # 3. Verifica se pelo menos uma opção ou termo foi selecionado
@@ -57,7 +56,7 @@ def redact_route():
              return redirect(url_for('index'))
 
         try:
-            # 4. Chamada da função com TODOS os 5 flags e a lista de termos (total de 6 argumentos)
+            # 4. Chamada da função com TODOS os 5 flags e a lista de termos
             redact_pdf(input_path, output_path, redact_email, redact_cpf, redact_address, redact_rg, redact_phone, custom_terms_list)
         except Exception as e:
             flash(f'Erro ao processar PDF: {e}')
@@ -69,8 +68,17 @@ def redact_route():
         return redirect(url_for('index'))
 
 
-@app.route('/downloads/<filename>')
-def download_file(filename):
+# ROTA 1: Usada pelo IFRAME para VISUALIZAR (Inline)
+@app.route('/view/<filename>')
+def view_file(filename):
+    # as_attachment=False (ou omitido) garante que o navegador exiba o PDF
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=False)
+
+
+# ROTA 2: Usada pelo botão para DOWNLOAD (Attachment)
+@app.route('/download_attachment/<filename>')
+def download_attachment(filename):
+    # as_attachment=True força o download
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
 
 
