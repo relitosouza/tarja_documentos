@@ -1,4 +1,4 @@
-# 🚀 PDF Redactor
+# 🚀 Tarjar PDF
 
 Este projeto é uma aplicação web construída com **Flask** e **PyMuPDF** que oferece uma ferramenta simples e eficiente para a **redação permanente** (tarjamento) de dados sensíveis (PII - *Personally Identifiable Information*) em documentos PDF com texto pesquisável.
 
@@ -48,4 +48,5 @@ Para configurar e rodar o projeto localmente, siga os passos abaixo:
 ## 📄 Licença
 
 Este projeto é distribuído sob a **GNU General Public License, Version 3 (GPL-3.0)**. A GPL é uma licença *copyleft* livre, que visa garantir a liberdade de compartilhar e modificar o software para todos os seus usuários.
+
 
